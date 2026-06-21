@@ -3,53 +3,151 @@
 <head>
     <title>Crop Recommendation System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-    <div class="container">
-        <h1>🌱 Crop Recommendation System</h1>
 
-        <p>
+<div class="container">
+
+    <h1>🌱 Crop Recommendation System</h1>
+
+    <p>
         Enter soil parameters to get the best crop recommendation.
-        </p>
-        <form action="/predict" method="POST">
+    </p>
 
-            <label>Nitrogen:</label>
-            <input type="number" name="N" placeholder="Enter Nitrogen value" required>
+    <form action="/predict" method="POST">
 
-            <br><br>
+        <label>Nitrogen:</label>
+        <input type="number" name="N" placeholder="Enter Nitrogen value" required>
 
-            <label>Phosphorus:</label>
-            <input type="number" name="P" placeholder="Enter Phosphorus value" required>
+        <label>Phosphorus:</label>
+        <input type="number" name="P" placeholder="Enter Phosphorus value" required>
 
+        <label>Potassium:</label>
+        <input type="number" name="K" placeholder="Enter Potassium value" required>
 
-            <br><br>
+        <label>pH:</label>
+        <input type="number" step="0.1" name="ph" placeholder="Enter pH value" required>
 
-            <label>Potassium:</label>
-            <input type="number" name="K" placeholder="Enter Potassium value" required>
+        <label>Soil Moisture:</label>
+        <input type="number" name="soil_moisture" placeholder="Enter Soil Moisture" required>
 
-            <br><br>
-            <label>pH:</label>
-            <input type="number" step="0.1" name="ph" placeholder="Enter pH value" required>
+        <button type="submit">
+            Predict
+        </button>
 
-            <br><br>
+    </form>
 
-            <label>Soil Moisture:</label>
-            <input type="number" name="soil_moisture" placeholder="Enter Soil Moisture" required>
+    {% if prediction %}
 
-        <br><br>
+    <div class="result">
 
-            <button type="submit">
-                Predict
-            </button>
+        <h2>🌱 Recommended Crop</h2>
+        <h3>{{ prediction }}</h3>
 
-            {% if prediction %}
-            <div class="result">
-                <h2>🌱 Recommended Crop</h2>
-                <h3>{{ prediction }}</h3>
-            </div>
-            {% endif %}
-        </form>
+        <hr>
+
+        <h2>🌾 Crop Details</h2>
+
+        <p><b>Season:</b> {{ crop_details.season }}</p>
+        <p><b>Water Requirement:</b> {{ crop_details.water }}</p>
+        <p><b>Profit Potential:</b> {{ crop_details.profit }}</p>
+
+        <hr>
+
+        <h2>💚 Soil Health Score</h2>
+
+        <h3>{{ health_score }}/100</h3>
+
+        <p><b>Status:</b> {{ status }}</p>
+
+        <hr>
+
+        <h2>💧 Irrigation Advice</h2>
+
+        <p>{{ irrigation }}</p>
+
+        <hr>
+
+        <h2>🧪 Soil Nutrient Analysis</h2>
+
+        <p><b>Nitrogen:</b> {{ n_status }}</p>
+        <p><b>Phosphorus:</b> {{ p_status }}</p>
+        <p><b>Potassium:</b> {{ k_status }}</p>
+
+        <hr>
+
+        <h2>📊 Nutrient Distribution</h2>
+
+        <canvas id="nutrientChart"></canvas>
+
+        <hr>
+
+        <h2>🧪 Fertilizer Recommendations</h2>
+
+        <ul>
+            {% for item in fertilizers %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+
     </div>
+
+    {% endif %}
+
+</div>
+
+{% if prediction %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const canvas = document.getElementById("nutrientChart");
+
+    if (!canvas) {
+        console.log("Canvas not found");
+        return;
+    }
+
+    new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: ['Nitrogen', 'Phosphorus', 'Potassium'],
+            datasets: [{
+                label: 'NPK Values',
+                data: [
+                    Number("{{ N }}"),
+                    Number("{{ P }}"),
+                    Number("{{ K }}")
+                ],
+                backgroundColor: [
+                    '#4CAF50',
+                    '#2196F3',
+                    '#FF9800'
+                ],
+                borderColor: [
+                    '#388E3C',
+                    '#1976D2',
+                    '#F57C00'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+{% endif %}
 
 </body>
 </html>
