@@ -131,7 +131,7 @@ The model can recommend various crops including:
 
 **Rohan**
 
-BE Computer Science Engineering Student | Machine Learning Enthusiast
+Artificial Intelligence | Machine Learning Enthusiast
 
 ---
 
