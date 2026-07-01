@@ -1,138 +1,189 @@
-# 🌱 Crop Recommendation System
+# 🌱 AgriTech Decision Support System
 
-Crop Recommendation System is a Machine Learning-powered web application that helps farmers and agricultural enthusiasts identify the most suitable crop based on soil characteristics and environmental conditions. The system uses a trained Random Forest model to provide accurate crop recommendations from user-provided inputs.
+> An AI-powered AgriTech dashboard that recommends suitable crops based on soil conditions and provides fertilizer suggestions, soil health analysis, disease risk assessment, irrigation advice, and profit estimation.
 
-## 🚀 Features
+---
 
-### Smart Crop Prediction
+## 📸 Dashboard Preview
 
-* Predicts the most suitable crop based on soil parameters
-* Considers Nitrogen (N), Phosphorus (P), Potassium (K), pH, and Soil Moisture
-* Uses a Random Forest Classifier for accurate recommendations
-* Provides real-time predictions through an interactive web interface
+> Add your screenshots here.
 
-## 🛠️ Technology Stack
+### 🏠 Home Page
 
-* **Backend:** Flask (Python)
-* **Machine Learning:** Scikit-learn (Random Forest Classifier)
-* **Frontend:** HTML5, CSS3
-* **Data Processing:** Pandas, NumPy
+![Home](screenshots/home.png)
 
-## Screenshots
+### 📊 Dashboard
 
-### Home Page
+![Dashboard](screenshots/dashboard.png)
 
-![Home Page](screenshots/home.png)
+---
 
-### Prediction Result
+# ✨ Features
 
-![Prediction Result](screenshots/prediction.png)
+- 🌱 AI-based Crop Recommendation
+- 💰 Profit Estimation
+- ⚠️ Disease Risk Detection
+- 💚 Soil Health Score
+- 💧 Irrigation Advice
+- 🧪 Soil Nutrient Analysis
+- 🌿 Fertilizer Recommendation
+- 📊 Interactive NPK Visualization (Chart.js)
+- 📝 Input Summary Dashboard
+- 🌙 Modern Dark UI
 
+---
 
-## 📋 Installation
+# 🛠 Tech Stack
 
-1. Clone the repository
+### Backend
 
-```bash
-git clone https://github.com/YOUR_USERNAME/Crop-Recommendation-System.git
-cd Crop-Recommendation-System
+- Python
+- Flask
+- Scikit-learn
+- Pandas
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+- Chart.js
+
+### Machine Learning
+
+- Random Forest Classifier
+
+---
+
+# 🚀 Project Workflow
+
+```text
+User Input
+      │
+      ▼
+Machine Learning Model
+      │
+      ▼
+Crop Recommendation
+      │
+      ▼
+────────────────────────────────
+Crop Details
+Profit Estimation
+Disease Risk
+Soil Health
+Irrigation Advice
+Nutrient Analysis
+Fertilizer Recommendation
+────────────────────────────────
 ```
 
-2. Create a virtual environment
+---
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
+# 📂 Project Structure
+
+```text
+AgriTech-Decision-Support-System
+│
+├── data/
+├── models/
+│   └── crop_model.pkl
+│
+├── screenshots/
+│
+├── static/
+│   └── style.css
+│
+├── templates/
+│   └── index.html
+│
+├── app.py
+├── train.py
+├── test_model.py
+├── requirements.txt
+└── README.md
 ```
 
-3. Install dependencies
+---
+
+# ⚙️ Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/Rohan26096/AgriTech-Decision-Support-System.git
+```
+
+Move into the project directory
+
+```bash
+cd AgriTech-Decision-Support-System
+```
+
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Run the application
+Run the application
 
 ```bash
-python3 app.py
+python app.py
 ```
 
-5. Open your browser and visit:
+Open your browser and visit
 
 ```text
 http://127.0.0.1:5001
 ```
 
-## 📁 Project Structure
+---
 
-```text
-Crop-Recommendation/
-├── data/
-│   └── fertilizer.csv
-├── models/
-│   └── crop_model.pkl
-├── static/
-│   └── style.css
-├── templates/
-│   └── index.html
-├── app.py
-├── train.py
-├── requirements.txt
-└── README.md
-```
+# 📈 Current Features
 
-## 🤖 Machine Learning Model
-
-### Crop Prediction Model
-
-* **Algorithm:** Random Forest Classifier
-* **Input Features:**
-
-  * Nitrogen (N)
-  * Phosphorus (P)
-  * Potassium (K)
-  * pH
-  * Soil Moisture
-* **Output:** Recommended Crop
-
-## 🌾 Supported Crops
-
-The model can recommend various crops including:
-
-* Rice
-* Maize
-* Chickpea
-* Kidneybeans
-* Pigeonpeas
-* Mothbeans
-* Mungbean
-* Blackgram
-* Lentil
-* Pomegranate
-* Banana
-* Mango
-* Grapes
-* Watermelon
-* Muskmelon
-* Coconut
-* Cotton
-* Jute
-* Coffee
-
-## 🎯 Future Improvements
-
-* Fertilizer Recommendation System
-* Weather API Integration
-* Enhanced UI/UX
-* Cloud Deployment
-* Mobile Responsive Design
-
-## 👨‍💻 Author
-
-**Rohan**
-
-Artificial Intelligence | Machine Learning Enthusiast
+- ✅ Crop Recommendation
+- ✅ Fertilizer Recommendation
+- ✅ Soil Health Analysis
+- ✅ Soil Nutrient Analysis
+- ✅ Disease Risk Detection
+- ✅ Profit Estimation
+- ✅ Irrigation Recommendation
+- ✅ Interactive Dashboard
+- ✅ Input Summary
+- ✅ Dark Theme
 
 ---
 
-🌱 Leveraging Machine Learning for Smarter Agricultural Decisions 🌱
+# 🔮 Future Improvements
+
+- 🌦 Weather API Integration
+- 📄 PDF Report Generation
+- 🗂 Prediction History (SQLite)
+- 📍 Region-based Crop Recommendation
+- 📱 Mobile Responsive Design
+- ☁ Cloud Deployment
+
+---
+
+# 🤝 Contributing
+
+Contributions, suggestions, and improvements are welcome.
+
+1. Fork the repository
+2. Create a new branch
+3. Commit your changes
+4. Open a Pull Request
+
+---
+
+# 👨‍💻 Author
+
+**Rohan**
+
+GitHub:
+https://github.com/Rohan26096
+
+---
+
+## ⭐ If you found this project useful, consider giving it a star!
