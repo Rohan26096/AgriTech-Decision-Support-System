@@ -69,6 +69,56 @@ def nutrient_status(value):
     else:
         return "Healthy 🟢"
 
+def profit_estimation(crop):
+
+    crop = crop.lower()
+
+    if crop not in profit_data:
+        return {
+            "yield": 0,
+            "price": 0,
+            "revenue": 0
+        }
+
+    expected_yield = profit_data[crop]["yield"]
+    market_price = profit_data[crop]["price"]
+
+    revenue = expected_yield * 1000 * market_price
+
+    return {
+        "yield": expected_yield,
+        "price": market_price,
+        "revenue": revenue
+    }
+def disease_risk(ph, moisture, N):
+
+    if moisture > 80:
+        return {
+            "risk": "High 🔴",
+            "disease": "Fungal Infection",
+            "advice": "Reduce irrigation and apply fungicide."
+        }
+
+    elif moisture > 60:
+        return {
+            "risk": "Medium 🟡",
+            "disease": "Leaf Spot",
+            "advice": "Monitor crop regularly."
+        }
+
+    elif N < 30:
+        return {
+            "risk": "Medium 🟡",
+            "disease": "Weak Plant Growth",
+            "advice": "Increase nitrogen fertilizer."
+        }
+
+    else:
+        return {
+            "risk": "Low 🟢",
+            "disease": "Healthy Crop",
+            "advice": "No immediate action required."
+        }
 crop_info = {
     "banana": {
         "season": "All Season",
@@ -96,6 +146,28 @@ crop_info = {
         "profit": "High"
     }
 }
+profit_data = {
+    "banana": {
+        "yield": 35,
+        "price": 20
+    },
+    "rice": {
+        "yield": 4.5,
+        "price": 25
+    },
+    "maize": {
+        "yield": 6,
+        "price": 22
+    },
+    "cotton": {
+        "yield": 2.5,
+        "price": 65
+    },
+    "mango": {
+        "yield": 12,
+        "price": 40
+    }
+}
 @app.route("/")
 def home():
     return render_template(
@@ -111,7 +183,9 @@ def home():
         k_status=None,
         N=None,
         P=None,
-        K=None
+        K=None,
+        profit=None,
+        disease=None,
     )
 
 
@@ -156,6 +230,8 @@ def predict():
             "profit": "Not Available"
         }
     )
+    profit = profit_estimation(crop_name)
+    disease = disease_risk(ph, soil_moisture, N)
 
     return render_template(
         "index.html",
@@ -170,7 +246,11 @@ def predict():
         k_status=k_status,
         N=N,
         P=P,
-        K=K
+        K=K,
+        ph=ph,
+        soil_moisture=soil_moisture,
+        profit=profit,
+        disease=disease
     )
 
 

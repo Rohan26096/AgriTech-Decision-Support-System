@@ -19,19 +19,19 @@
     <form action="/predict" method="POST">
 
         <label>Nitrogen:</label>
-        <input type="number" name="N" placeholder="Enter Nitrogen value" required>
+        <input type="number" name="N" placeholder="Enter Nitrogen value" value="{{ N if N is not none else '' }}" required>
 
         <label>Phosphorus:</label>
-        <input type="number" name="P" placeholder="Enter Phosphorus value" required>
+        <input type="number" name="P" placeholder="Enter Phosphorus value" value="{{ P if P is not none else '' }}" required>
 
         <label>Potassium:</label>
-        <input type="number" name="K" placeholder="Enter Potassium value" required>
+        <input type="number" name="K" placeholder="Enter Potassium value" value="{{ K if K is not none else '' }}" required>
 
         <label>pH:</label>
-        <input type="number" step="0.1" name="ph" placeholder="Enter pH value" required>
+        <input type="number" step="0.1" name="ph" placeholder="Enter pH value" value="{{ ph if ph is not none else '' }}" required>
 
         <label>Soil Moisture:</label>
-        <input type="number" name="soil_moisture" placeholder="Enter Soil Moisture" required>
+        <input type="number" name="soil_moisture" placeholder="Enter Soil Moisture" value="{{ soil_moisture if soil_moisture is not none else '' }}" required>
 
         <button type="submit">
             Predict
@@ -40,58 +40,128 @@
     </form>
 
     {% if prediction %}
+    <div class="card full-width">
 
-    <div class="result">
+        <h2>📝 Input Summary</h2>
 
-        <h2>🌱 Recommended Crop</h2>
-        <h3>{{ prediction }}</h3>
+        <div class="summary-grid">
 
-        <hr>
+            <div class="summary-item">
+                <span>🧪 Nitrogen</span>
+                <strong>{{ N }}</strong>
+            </div>
 
+            <div class="summary-item">
+                <span>🧪 Phosphorus</span>
+                <strong>{{ P }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>🧪 Potassium</span>
+                <strong>{{ K }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>⚗️ pH</span>
+                <strong>{{ ph }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>💧 Soil Moisture</span>
+                <strong>{{ soil_moisture }}%</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="card hero-card full-width">
+        <p class="hero-title">
+            🌱 Recommended Crop
+        </p>
+        <h1 class="hero-crop">
+            🌾 {{ prediction|title }}
+        </h1>
+        <p class="hero-subtitle">
+            Best crop based on your soil analysis
+        </p>
+    </div>
+
+    <!-- Crop Details -->
+    <div class="card">
         <h2>🌾 Crop Details</h2>
+        <p>📅 <b>Season</b><br>{{ crop_details.season }}</p>
+        <p>💧 <b>Water Requirement</b><br>{{ crop_details.water }}</p>
+        <p>💰 <b>Profit Potential</b><br>{{ crop_details.profit }}</p>
+    </div>
 
-        <p><b>Season:</b> {{ crop_details.season }}</p>
-        <p><b>Water Requirement:</b> {{ crop_details.water }}</p>
-        <p><b>Profit Potential:</b> {{ crop_details.profit }}</p>
-
+    <!-- Profit -->
+    {% if profit %}
+    <div class="card">
+        <h2>💰 Profit Estimation</h2>
+        <p><b>Expected Yield</b></p>
+        <h3>{{ profit.yield }} Tons/Hectare</h3>
+        <p><b>Market Price</b></p>
+        <h3>₹{{ profit.price }}/kg</h3>
         <hr>
+        <div class="revenue-box">
+            ₹{{ "{:,.0f}".format(profit.revenue) }}
+        </div>
+        <p style="text-align:center;">Estimated Revenue</p>
+    </div>
+    {% endif %}
 
-        <h2>💚 Soil Health Score</h2>
+    <!-- Disease -->
+    {% if disease %}
+    <div class="card">
+        <h2>⚠ Disease Risk</h2>
+        <p><b>Risk Level</b></p>
+        <h3>{{ disease.risk }}</h3>
+        <p><b>Possible Disease</b></p>
+        <p>{{ disease.disease }}</p>
+        <p><b>Recommendation</b></p>
+        <p>{{ disease.advice }}</p>
+    </div>
+    {% endif %}
 
-        <h3>{{ health_score }}/100</h3>
+    <!-- Soil -->
+    <div class="card">
+        <h2>💚 Soil Health</h2>
+        <div class="big">
+            {{ health_score }}/100
+        </div>
+        <br>
+        <p><b>Status</b></p>
+        <h3>{{ status }}</h3>
+    </div>
 
-        <p><b>Status:</b> {{ status }}</p>
+    <!-- Irrigation -->
+    <div class="card">
+        <h2>💧 Irrigation</h2>
+        <h3>{{ irrigation }}</h3>
+    </div>
 
-        <hr>
+    <!-- Nutrients -->
+    <div class="card">
+        <h2>🧪 Nutrient Analysis</h2>
+        <p>🟢 Nitrogen : {{ n_status }}</p>
+        <p>🔵 Phosphorus : {{ p_status }}</p>
+        <p>🟠 Potassium : {{ k_status }}</p>
+    </div>
 
-        <h2>💧 Irrigation Advice</h2>
-
-        <p>{{ irrigation }}</p>
-
-        <hr>
-
-        <h2>🧪 Soil Nutrient Analysis</h2>
-
-        <p><b>Nitrogen:</b> {{ n_status }}</p>
-        <p><b>Phosphorus:</b> {{ p_status }}</p>
-        <p><b>Potassium:</b> {{ k_status }}</p>
-
-        <hr>
-
+    <!-- Graph -->
+    <div class="card chart-card">
         <h2>📊 Nutrient Distribution</h2>
-
         <canvas id="nutrientChart"></canvas>
+    </div>
+    <!-- Fertilizer -->
 
-        <hr>
-
-        <h2>🧪 Fertilizer Recommendations</h2>
-
+    <div class="card full-width">
+        <h2>🌿 Fertilizer Recommendation</h2>
         <ul>
             {% for item in fertilizers %}
             <li>{{ item }}</li>
             {% endfor %}
         </ul>
-
     </div>
 
     {% endif %}
@@ -121,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     Number("{{ P }}"),
                     Number("{{ K }}")
                 ],
+                borderRadius:12,
                 backgroundColor: [
                     '#4CAF50',
                     '#2196F3',
@@ -135,12 +206,42 @@ document.addEventListener("DOMContentLoaded", function() {
             }]
         },
         options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
+
+            responsive:true,
+
+            plugins:{
+                legend:{
+                    labels:{
+                        color:"#ffffff"
+                    }
                 }
+            },
+
+            scales:{
+
+                x:{
+                    ticks:{
+                        color:"#ffffff"
+                    },
+                    grid:{
+                        color:"#30363d"
+                    }
+                },
+
+                y:{
+                    beginAtZero:true,
+
+                    ticks:{
+                        color:"#ffffff"
+                    },
+
+                    grid:{
+                        color:"#30363d"
+                    }
+                }
+
             }
+
         }
     });
 
