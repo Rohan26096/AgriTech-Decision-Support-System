@@ -72,13 +72,13 @@ This makes the application more practical and closer to a real-world AgriTech so
           Machine Learning Model
                      │
                      ▼
-        Crop Recommendation
+            Crop Recommendation
                      │
-      ┌──────────────┼──────────────┐
-      ▼              ▼              ▼
+                    ┌──────────────┼──────────────┐
+▼                ▼                 ▼
  Crop Details   Soil Analysis   Profit Estimation
       │              │              │
-      ▼              ▼              ▼
+      ▼             ▼              ▼
 Disease Risk   Irrigation     Fertilizer Advice
                      │
                      ▼
