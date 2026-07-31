@@ -74,7 +74,7 @@ This makes the application more practical and closer to a real-world AgriTech so
                      ▼
             Crop Recommendation
                      │
-              ┌──────────────┼──────────────┐
+┌──────────────┼──────────────┐
 ▼                ▼                 ▼
  Crop Details   Soil Analysis   Profit Estimation
       │              │              │
