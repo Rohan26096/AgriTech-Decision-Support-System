@@ -1,254 +1,396 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Crop Recommendation System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Agri-Tech Crop Recommendation System</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7"></script>
 </head>
 
 <body>
+    <div class="container">
 
-<div class="container">
+        <h1>🌱 Crop Recommendation System</h1>
 
-    <h1>🌱 Crop Recommendation System</h1>
+        <p>
+            Enter soil and weather parameters to get a crop recommendation.
+        </p>
 
-    <p>
-        Enter soil parameters to get the best crop recommendation.
-    </p>
+        {% if error %}
+        <div class="card full-width" role="alert">
+            <h2>⚠️ Input Error</h2>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
 
-    <form action="/predict" method="POST">
+        <!-- Prediction Form -->
+        <form action="{{ url_for('predict') }}" method="POST">
 
-        <label>Nitrogen:</label>
-        <input type="number" name="N" placeholder="Enter Nitrogen value" value="{{ N if N is not none else '' }}" required>
+            <label for="N">Nitrogen:</label>
+            <input id="N" type="number" step="any" min="0" name="N" required value="{{ N if N is not none else '' }}"
+                placeholder="Nitrogen (N)">
 
-        <label>Phosphorus:</label>
-        <input type="number" name="P" placeholder="Enter Phosphorus value" value="{{ P if P is not none else '' }}" required>
+            <label for="P">Phosphorus:</label>
+            <input id="P" type="number" step="any" min="0" name="P" required value="{{ P if P is not none else '' }}"
+                placeholder="Phosphorus (P)">
 
-        <label>Potassium:</label>
-        <input type="number" name="K" placeholder="Enter Potassium value" value="{{ K if K is not none else '' }}" required>
+            <label for="K">Potassium:</label>
+            <input id="K" type="number" step="any" min="0" name="K" required value="{{ K if K is not none else '' }}"
+                placeholder="Potassium (K)">
 
-        <label>pH:</label>
-        <input type="number" step="0.1" name="ph" placeholder="Enter pH value" value="{{ ph if ph is not none else '' }}" required>
+            <label for="ph">Soil pH:</label>
+            <input id="ph" type="number" step="any" min="0" max="14" name="ph" required
+                value="{{ ph if ph is not none else '' }}" placeholder="Soil pH (0-14)">
 
-        <label>Soil Moisture:</label>
-        <input type="number" name="soil_moisture" placeholder="Enter Soil Moisture" value="{{ soil_moisture if soil_moisture is not none else '' }}" required>
+            <label for="soil_moisture">Soil Moisture (%):</label>
+            <input id="soil_moisture" type="number" step="any" min="0" max="100" name="soil_moisture" required
+                value="{{ soil_moisture if soil_moisture is not none else '' }}" placeholder="Soil moisture (%)">
 
-        <button type="submit">
-            Predict
-        </button>
+            <label for="temperature">Temperature (°C):</label>
+            <input id="temperature" type="number" step="any" name="temperature" required
+                value="{{ temperature if temperature is not none else '' }}" placeholder="Temperature in °C">
 
-    </form>
+            <label for="humidity">Humidity (%):</label>
+            <input id="humidity" type="number" step="any" min="0" max="100" name="humidity" required
+                value="{{ humidity if humidity is not none else '' }}" placeholder="Humidity (%)">
+
+            <label for="rainfall">Rainfall (mm):</label>
+            <input id="rainfall" type="number" step="any" min="0" name="rainfall" required
+                value="{{ rainfall if rainfall is not none else '' }}" placeholder="Rainfall in mm">
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result">
+
+            <!-- Input Summary -->
+            <div class="card full-width">
+                <h2>📝 Input Summary</h2>
+
+                <div class="summary-grid">
+
+                    <div class="summary-item">
+                        <span>🧪 Nitrogen</span>
+                        <strong>{{ N }}</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>🧪 Phosphorus</span>
+                        <strong>{{ P }}</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>🧪 Potassium</span>
+                        <strong>{{ K }}</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>⚗️ pH</span>
+                        <strong>{{ ph }}</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>🌡️ Temperature</span>
+                        <strong>{{ temperature }} °C</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>💧 Humidity</span>
+                        <strong>{{ humidity }}%</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>🌧️ Rainfall</span>
+                        <strong>{{ rainfall }} mm</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>💧 Soil Moisture</span>
+                        <strong>{{ soil_moisture }}%</strong>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Recommended Crop -->
+            <div class="card hero-card full-width">
+                <p class="hero-title">🌱 Recommended Crop</p>
+
+                <h1 class="hero-crop">🌾 {{ prediction|title }}</h1>
+
+                <p class="hero-subtitle">
+                    Crop predicted from the entered soil and weather data
+                </p>
+            </div>
+
+            <!-- Crop Details -->
+            <div class="card">
+                <h2>🌾 Crop Details</h2>
+
+                <p>
+                    📅 <b>Season</b><br>
+                    {{ crop_details.season }}
+                </p>
+
+                <p>
+                    💧 <b>Water Requirement</b><br>
+                    {{ crop_details.water }}
+                </p>
+
+                <p>
+                    💰 <b>Profit Potential</b><br>
+                    {{ crop_details.profit }}
+                </p>
+
+                <p>
+                    <small>
+                        General guidance only. Verify local crop suitability
+                        before making farming decisions.
+                    </small>
+                </p>
+            </div>
+
+            <!-- Revenue Estimation -->
+            <div class="card">
+                <h2>💰 Revenue Estimation</h2>
+
+                {% if profit.price_per_kg is not none %}
+                <p><b>Price Reference</b></p>
+
+                <h3>
+                    ₹{{ "{:,.2f}".format(profit.price_per_kg) }}/kg
+                </h3>
+
+                <p>{{ profit.price_label }}</p>
+
+                {% if profit.price_source %}
+                <p>
+                    <small>Source: {{ profit.price_source }}</small>
+                </p>
+                {% endif %}
+
+                <p><small>{{ profit.price_note }}</small></p>
+
+                <p>
+                    <a href="{{ profit.source_url }}" target="_blank" rel="noopener noreferrer">
+                        View price source
+                    </a>
+                </p>
+
+                {% else %}
+                <p><b>Price Reference</b></p>
+                <p>{{ profit.price_label }}</p>
+                <p><small>{{ profit.price_note }}</small></p>
+
+                <p>
+                    <a href="{{ profit.source_url }}" target="_blank" rel="noopener noreferrer">
+                        Check official mandi prices
+                    </a>
+                </p>
+                {% endif %}
+
+                {% if profit.yield_t_ha is not none
+                and profit.gross_revenue is not none %}
+
+                <p><b>Yield Reference</b></p>
+
+                <h3>
+                    {{ "{:,.2f}".format(profit.yield_t_ha) }}
+                    tonnes/hectare
+                </h3>
+
+                <div class="revenue-box">
+                    ₹{{ "{:,.0f}".format(profit.gross_revenue) }}
+                </div>
+
+                <p style="text-align: center;">
+                    Estimated gross revenue per hectare
+                </p>
+
+                <p>
+                    <small>
+                        Gross revenue excludes cultivation, labour,
+                        transport, storage, and other costs. It is not
+                        net profit.
+                    </small>
+                </p>
+
+                {% else %}
+                <p><b>Gross Revenue</b></p>
+
+                <p>
+                    Not calculated because a comparable, verified
+                    yield value has not been configured for this crop.
+                </p>
+
+                <p>
+                    <small>
+                        Yield and price must refer to the same crop form
+                        and unit. No ₹0 placeholder or guessed yield is used.
+                    </small>
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Disease Risk -->
+            <div class="card">
+                <h2>⚠️ Crop Risk Screening</h2>
+
+                <p><b>Screening Level</b></p>
+                <h3>{{ disease.risk }}</h3>
+
+                <p><b>Possible Concern</b></p>
+                <p>{{ disease.disease }}</p>
+
+                <p><b>Recommendation</b></p>
+                <p>{{ disease.advice }}</p>
+
+                <p>
+                    <small>
+                        This is a simple rule-based screening, not a
+                        confirmed disease diagnosis.
+                    </small>
+                </p>
+            </div>
+
+            <!-- Soil Health -->
+            <div class="card">
+                <h2>💚 Soil Parameter Screening</h2>
+
+                <div class="big">{{ health_score }}/100</div>
+
+                <p><b>Screening Status</b></p>
+                <h3>{{ status }}</h3>
+
+                <small>
+                    Indicative screening based on entered NPK and pH values.
+                    This is not a laboratory soil-health assessment or a
+                    crop-specific fertilizer recommendation.
+                </small>
+            </div>
+
+            <!-- Irrigation -->
+            <div class="card">
+                <h2>💧 Irrigation</h2>
+                <h3>{{ irrigation }}</h3>
+
+                <small>
+                    Use actual soil and crop conditions when deciding
+                    irrigation requirements.
+                </small>
+            </div>
+
+            <!-- Nutrient Analysis -->
+            <div class="card">
+                <h2>🧪 Nutrient Analysis</h2>
+
+                <p>🟢 Nitrogen: {{ n_status }}</p>
+                <p>🔵 Phosphorus: {{ p_status }}</p>
+                <p>🟠 Potassium: {{ k_status }}</p>
+            </div>
+
+            <!-- Nutrient Chart -->
+            <div class="card chart-card">
+                <h2>📊 Nutrient Distribution</h2>
+                <canvas id="nutrientChart"></canvas>
+            </div>
+
+            <!-- Fertilizer Recommendation -->
+            <div class="card full-width">
+                <h2>🌿 Fertilizer Recommendation</h2>
+
+                <ul>
+                    {% for item in fertilizers %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+
+                <small>
+                    Confirm fertilizer requirements using a soil test and
+                    crop-specific agricultural guidance.
+                </small>
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
 
     {% if prediction %}
-    <div class="card full-width">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById("nutrientChart");
 
-        <h2>📝 Input Summary</h2>
+            if (!canvas) {
+                return;
+            }
 
-        <div class="summary-grid">
+            new Chart(canvas, {
+                type: "bar",
 
-            <div class="summary-item">
-                <span>🧪 Nitrogen</span>
-                <strong>{{ N }}</strong>
-            </div>
+                data: {
+                    labels: ["Nitrogen", "Phosphorus", "Potassium"],
 
-            <div class="summary-item">
-                <span>🧪 Phosphorus</span>
-                <strong>{{ P }}</strong>
-            </div>
+                    datasets: [{
+                        label: "NPK Values",
+                        data: [
+                            {{ N| tojson }},
+                            {{ P| tojson }},
+            {{ K| tojson }}
+                        ],
+            borderRadius: 12,
+            backgroundColor: [
+            "#4CAF50",
+            "#2196F3",
+            "#FF9800"
+        ],
+            borderWidth: 1
+                    }]
+                },
 
-            <div class="summary-item">
-                <span>🧪 Potassium</span>
-                <strong>{{ K }}</strong>
-            </div>
+            options: {
+            responsive: true,
 
-            <div class="summary-item">
-                <span>⚗️ pH</span>
-                <strong>{{ ph }}</strong>
-            </div>
-
-            <div class="summary-item">
-                <span>💧 Soil Moisture</span>
-                <strong>{{ soil_moisture }}%</strong>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hero Card -->
-    <div class="card hero-card full-width">
-        <p class="hero-title">
-            🌱 Recommended Crop
-        </p>
-        <h1 class="hero-crop">
-            🌾 {{ prediction|title }}
-        </h1>
-        <p class="hero-subtitle">
-            Best crop based on your soil analysis
-        </p>
-    </div>
-
-    <!-- Crop Details -->
-    <div class="card">
-        <h2>🌾 Crop Details</h2>
-        <p>📅 <b>Season</b><br>{{ crop_details.season }}</p>
-        <p>💧 <b>Water Requirement</b><br>{{ crop_details.water }}</p>
-        <p>💰 <b>Profit Potential</b><br>{{ crop_details.profit }}</p>
-    </div>
-
-    <!-- Profit -->
-    {% if profit %}
-    <div class="card">
-        <h2>💰 Profit Estimation</h2>
-        <p><b>Expected Yield</b></p>
-        <h3>{{ profit.yield }} Tons/Hectare</h3>
-        <p><b>Market Price</b></p>
-        <h3>₹{{ profit.price }}/kg</h3>
-        <hr>
-        <div class="revenue-box">
-            ₹{{ "{:,.0f}".format(profit.revenue) }}
-        </div>
-        <p style="text-align:center;">Estimated Revenue</p>
-    </div>
-    {% endif %}
-
-    <!-- Disease -->
-    {% if disease %}
-    <div class="card">
-        <h2>⚠ Disease Risk</h2>
-        <p><b>Risk Level</b></p>
-        <h3>{{ disease.risk }}</h3>
-        <p><b>Possible Disease</b></p>
-        <p>{{ disease.disease }}</p>
-        <p><b>Recommendation</b></p>
-        <p>{{ disease.advice }}</p>
-    </div>
-    {% endif %}
-
-    <!-- Soil -->
-    <div class="card">
-        <h2>💚 Soil Health</h2>
-        <div class="big">
-            {{ health_score }}/100
-        </div>
-        <br>
-        <p><b>Status</b></p>
-        <h3>{{ status }}</h3>
-    </div>
-
-    <!-- Irrigation -->
-    <div class="card">
-        <h2>💧 Irrigation</h2>
-        <h3>{{ irrigation }}</h3>
-    </div>
-
-    <!-- Nutrients -->
-    <div class="card">
-        <h2>🧪 Nutrient Analysis</h2>
-        <p>🟢 Nitrogen : {{ n_status }}</p>
-        <p>🔵 Phosphorus : {{ p_status }}</p>
-        <p>🟠 Potassium : {{ k_status }}</p>
-    </div>
-
-    <!-- Graph -->
-    <div class="card chart-card">
-        <h2>📊 Nutrient Distribution</h2>
-        <canvas id="nutrientChart"></canvas>
-    </div>
-    <!-- Fertilizer -->
-
-    <div class="card full-width">
-        <h2>🌿 Fertilizer Recommendation</h2>
-        <ul>
-            {% for item in fertilizers %}
-            <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    {% endif %}
-
-</div>
-
-{% if prediction %}
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-
-    const canvas = document.getElementById("nutrientChart");
-
-    if (!canvas) {
-        console.log("Canvas not found");
-        return;
-    }
-
-    new Chart(canvas, {
-        type: 'bar',
-        data: {
-            labels: ['Nitrogen', 'Phosphorus', 'Potassium'],
-            datasets: [{
-                label: 'NPK Values',
-                data: [
-                    Number("{{ N }}"),
-                    Number("{{ P }}"),
-                    Number("{{ K }}")
-                ],
-                borderRadius:12,
-                backgroundColor: [
-                    '#4CAF50',
-                    '#2196F3',
-                    '#FF9800'
-                ],
-                borderColor: [
-                    '#388E3C',
-                    '#1976D2',
-                    '#F57C00'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-
-            responsive:true,
-
-            plugins:{
-                legend:{
-                    labels:{
-                        color:"#ffffff"
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#ffffff"
                     }
                 }
             },
 
-            scales:{
-
-                x:{
-                    ticks:{
-                        color:"#ffffff"
+            scales: {
+                x: {
+                    ticks: {
+                        color: "#ffffff"
                     },
-                    grid:{
-                        color:"#30363d"
+                    grid: {
+                        color: "#30363d"
                     }
                 },
 
-                y:{
-                    beginAtZero:true,
-
-                    ticks:{
-                        color:"#ffffff"
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: "#ffffff"
                     },
-
-                    grid:{
-                        color:"#30363d"
+                    grid: {
+                        color: "#30363d"
                     }
                 }
-
             }
-
         }
-    });
-
-});
-</script>
-
-{% endif %}
+            });
+        });
+    </script>
+    {% endif %}
 
 </body>
+
 </html>
